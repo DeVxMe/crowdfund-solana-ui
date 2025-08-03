@@ -63,6 +63,9 @@ export const DonateDialog = ({ campaign, open, onOpenChange, onDonationComplete 
       const [transactionPda] = getTransactionPda(publicKey, campaign.cid, nextDonorCount);
       const amountLamports = solToLamports(donationAmount);
 
+      // Get fresh blockhash to avoid duplicate transaction issues
+      const { blockhash } = await provider.connection.getLatestBlockhash('confirmed');
+
       const tx = await program.methods
         .donate(campaign.cid, amountLamports)
         .accounts({
@@ -71,7 +74,10 @@ export const DonateDialog = ({ campaign, open, onOpenChange, onDonationComplete 
           donor: publicKey,
           systemProgram: SystemProgram.programId,
         })
-        .rpc({ commitment: 'confirmed' });
+        .rpc({ 
+          commitment: 'confirmed',
+          skipPreflight: false,
+        });
 
       console.log("Donation completed with tx:", tx);
 

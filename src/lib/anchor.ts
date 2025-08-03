@@ -18,7 +18,11 @@ export const getProvider = (wallet: any) => {
   return new anchor.AnchorProvider(
     connection,
     anchorWallet,
-    anchor.AnchorProvider.defaultOptions()
+    {
+      commitment: 'confirmed',
+      preflightCommitment: 'confirmed',
+      skipPreflight: false,
+    }
   );
 };
 

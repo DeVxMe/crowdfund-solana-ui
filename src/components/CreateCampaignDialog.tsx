@@ -81,6 +81,9 @@ export const CreateCampaignDialog = ({ onCampaignCreated }: CreateCampaignDialog
       const [campaignPda] = getCampaignPda(campaignId);
       const goalLamports = solToLamports(goalAmount);
 
+      // Get fresh blockhash to avoid duplicate transaction issues
+      const { blockhash } = await provider.connection.getLatestBlockhash('confirmed');
+
       const tx = await program.methods
         .createCampaign(
           formData.title,
@@ -94,7 +97,10 @@ export const CreateCampaignDialog = ({ onCampaignCreated }: CreateCampaignDialog
           creator: publicKey,
           systemProgram: SystemProgram.programId,
         })
-        .rpc({ commitment: 'confirmed' });
+        .rpc({ 
+          commitment: 'confirmed',
+          skipPreflight: false,
+        });
 
       console.log("Campaign created with tx:", tx);
 
