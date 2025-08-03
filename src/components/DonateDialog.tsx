@@ -95,13 +95,16 @@ export const DonateDialog = ({ campaign, open, onOpenChange, onDonationComplete 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-card border-border">
+      <DialogContent className="sm:max-w-[400px] bg-card border-border" aria-describedby="donate-dialog-description">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold flex items-center gap-2">
             <Heart className="w-5 h-5 text-destructive" />
             Donate to Campaign
           </DialogTitle>
         </DialogHeader>
+        <p id="donate-dialog-description" className="sr-only">
+          Make a donation to support this campaign
+        </p>
         
         <div className="space-y-4">
           <div className="p-4 rounded-lg bg-secondary/50 border border-border">

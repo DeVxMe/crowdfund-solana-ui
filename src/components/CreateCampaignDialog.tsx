@@ -122,10 +122,13 @@ export const CreateCampaignDialog = ({ onCampaignCreated }: CreateCampaignDialog
           Create Campaign
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] bg-card border-border">
+      <DialogContent className="sm:max-w-[600px] bg-card border-border" aria-describedby="create-campaign-description">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Create New Campaign</DialogTitle>
         </DialogHeader>
+        <p id="create-campaign-description" className="sr-only">
+          Fill out the form below to create a new crowdfunding campaign
+        </p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Campaign Title *</Label>

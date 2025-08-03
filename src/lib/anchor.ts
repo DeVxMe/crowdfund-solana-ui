@@ -6,11 +6,18 @@ import { CROWDFUNDING_PROGRAM_ID, IDL } from "@/types/crowdfunding";
 export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
 export const getProvider = (wallet: any) => {
-  if (!wallet) return null;
+  if (!wallet || !wallet.adapter) return null;
+  
+  // Create a wallet adapter compatible with Anchor
+  const anchorWallet = {
+    publicKey: wallet.adapter.publicKey,
+    signTransaction: wallet.adapter.signTransaction?.bind(wallet.adapter),
+    signAllTransactions: wallet.adapter.signAllTransactions?.bind(wallet.adapter),
+  };
   
   return new anchor.AnchorProvider(
     connection,
-    wallet,
+    anchorWallet,
     anchor.AnchorProvider.defaultOptions()
   );
 };
