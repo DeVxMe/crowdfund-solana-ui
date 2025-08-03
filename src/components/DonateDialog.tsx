@@ -36,6 +36,8 @@ export const DonateDialog = ({ campaign, open, onOpenChange, onDonationComplete 
       return;
     }
 
+    if (loading) return; // Prevent duplicate submissions
+
     const donationAmount = parseFloat(amount);
     if (donationAmount < 1) {
       toast({
@@ -61,7 +63,7 @@ export const DonateDialog = ({ campaign, open, onOpenChange, onDonationComplete 
       const [transactionPda] = getTransactionPda(publicKey, campaign.cid, nextDonorCount);
       const amountLamports = solToLamports(donationAmount);
 
-      await program.methods
+      const tx = await program.methods
         .donate(campaign.cid, amountLamports)
         .accounts({
           campaign: campaignPda,
@@ -69,7 +71,9 @@ export const DonateDialog = ({ campaign, open, onOpenChange, onDonationComplete 
           donor: publicKey,
           systemProgram: SystemProgram.programId,
         })
-        .rpc();
+        .rpc({ commitment: 'confirmed' });
+
+      console.log("Donation completed with tx:", tx);
 
       toast({
         title: "Success!",

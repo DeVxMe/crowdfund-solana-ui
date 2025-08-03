@@ -39,6 +39,8 @@ export const CreateCampaignDialog = ({ onCampaignCreated }: CreateCampaignDialog
       return;
     }
 
+    if (loading) return; // Prevent duplicate submissions
+
     if (!formData.title || !formData.description || !formData.goal) {
       toast({
         title: "Missing information",
@@ -79,7 +81,7 @@ export const CreateCampaignDialog = ({ onCampaignCreated }: CreateCampaignDialog
       const [campaignPda] = getCampaignPda(campaignId);
       const goalLamports = solToLamports(goalAmount);
 
-      await program.methods
+      const tx = await program.methods
         .createCampaign(
           formData.title,
           formData.description,
@@ -92,7 +94,9 @@ export const CreateCampaignDialog = ({ onCampaignCreated }: CreateCampaignDialog
           creator: publicKey,
           systemProgram: SystemProgram.programId,
         })
-        .rpc();
+        .rpc({ commitment: 'confirmed' });
+
+      console.log("Campaign created with tx:", tx);
 
       toast({
         title: "Success!",
